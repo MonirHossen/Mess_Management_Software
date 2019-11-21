@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMessExpensesTable extends Migration
+class CreateMessMembersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,13 @@ class CreateMessExpensesTable extends Migration
      */
     public function up()
     {
-        Schema::create('mess_expenses', function (Blueprint $table) {
+        Schema::create('mess_members', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('phone');
+            $table->string('image')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -26,6 +31,6 @@ class CreateMessExpensesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mess_expenses');
+        Schema::dropIfExists('mess_members');
     }
 }

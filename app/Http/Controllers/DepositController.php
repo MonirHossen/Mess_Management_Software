@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\MessExpense;
+use App\Deposit;
 use App\MessMember;
 use App\User;
 use Illuminate\Http\Request;
 
-class MessExpenseController extends Controller
+class DepositController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,10 +16,9 @@ class MessExpenseController extends Controller
      */
     public function index()
     {
-        $data['users']      = User::all();
         $data['members']    = MessMember::all();
-        $data['mess_expense'] = MessExpense::orderBy('id','desc')->paginate(10);
-        return view('admin.mess_expense.index',$data);
+        $data['deposits']    = Deposit::orderBy('id','desc')->paginate(10);
+        return view('admin.deposit.index',$data);
     }
 
     /**
@@ -31,7 +30,7 @@ class MessExpenseController extends Controller
     {
         $data['users']      = User::all();
         $data['members']    = MessMember::all();
-       return view('admin.mess_expense.create',$data);
+        return view('admin.deposit.create',$data);
     }
 
     /**
@@ -45,23 +44,21 @@ class MessExpenseController extends Controller
         $request->validate([
             'user_id'       => 'required',
             'member_id'     => 'required',
-            'expense_date'  => 'required',
+            'deposit_date'  => 'required',
             'amount'        => 'required',
         ]);
-
-        MessExpense::create($request->except('_token'));
-        session()->flash('message','Mess Expense Added Successfully');
-        return redirect()->route('mess_expense.create');
-
+        Deposit::create($request->except('_token'));
+        session()->flash('message','Deposit Successfully');
+        return redirect()->route('deposit.create');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\MessExpense  $messExpense
+     * @param  \App\Deposit  $deposit
      * @return \Illuminate\Http\Response
      */
-    public function show(MessExpense $messExpense)
+    public function show(Deposit $deposit)
     {
         //
     }
@@ -69,48 +66,47 @@ class MessExpenseController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\MessExpense  $messExpense
+     * @param  \App\Deposit  $deposit
      * @return \Illuminate\Http\Response
      */
-    public function edit(MessExpense $messExpense)
+    public function edit(Deposit $deposit)
     {
         $data['users']      = User::all();
         $data['members']    = MessMember::all();
-        $data['mess_expense']    = $messExpense;
-
-        return view('admin.mess_expense.edit',$data);
+        $data['deposit']    = $deposit;
+        return view('admin.deposit.edit',$data);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\MessExpense  $messExpense
+     * @param  \App\Deposit  $deposit
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, MessExpense $messExpense)
+    public function update(Request $request, Deposit $deposit)
     {
         $request->validate([
             'user_id'       => 'required',
             'member_id'     => 'required',
-            'expense_date'  => 'required',
+            'deposit_date'  => 'required',
             'amount'        => 'required',
         ]);
-        $messExpense->update($request->except('_token'));
-        session()->flash('message','Mess Expense Updated Successfully');
-        return redirect()->route('mess_expense.index');
+        $deposit->update($request->except('_token'));
+        session()->flash('message','Deposit Updated Successfully');
+        return redirect()->route('deposit.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\MessExpense  $messExpense
+     * @param  \App\Deposit  $deposit
      * @return \Illuminate\Http\Response
      */
-    public function destroy(MessExpense $messExpense)
+    public function destroy(Deposit $deposit)
     {
-       $messExpense->delete();
-        session()->flash('message','Mess Expense Deleted Successfully');
+        $deposit->delete();
+        session()->flash('message','Deposit Deleted Successfully');
         return redirect()->back();
     }
 }

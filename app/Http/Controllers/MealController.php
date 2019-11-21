@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Meal;
+use App\MessMember;
+use App\User;
 use Illuminate\Http\Request;
 
 class MealController extends Controller
@@ -14,7 +16,9 @@ class MealController extends Controller
      */
     public function index()
     {
-        //
+        $data['meals'] = Meal::orderBy('user_id','asc')->paginate(10);
+        $data['members']  = MessMember::all();
+        return view('admin.meal.index',$data);
     }
 
     /**
@@ -24,7 +28,9 @@ class MealController extends Controller
      */
     public function create()
     {
-        //
+        $data['users']  = User::all();
+        $data['members']  = MessMember::all();
+        return view('admin.meal.create',$data);
     }
 
     /**
@@ -35,7 +41,14 @@ class MealController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_id'   => 'required',
+            'member_id'   => 'required',
+            'meal_date' => 'required',
+        ]);
+        Meal::create($request->except('_token'));
+        session()->flash('message','Meal Added Successfully');
+        return redirect()->route('meal.index');
     }
 
     /**
@@ -57,7 +70,10 @@ class MealController extends Controller
      */
     public function edit(Meal $meal)
     {
-        //
+        $data['users'] = User::all();
+        $data['members'] = MessMember::all();
+        $data['meal']   = $meal;
+     return view('admin.meal.edit',$data);
     }
 
     /**
@@ -69,7 +85,15 @@ class MealController extends Controller
      */
     public function update(Request $request, Meal $meal)
     {
-        //
+        $request->validate([
+            'user_id'   => 'required',
+            'member_id'   => 'required',
+            'meal_date' => 'required',
+        ]);
+
+        $meal->update($request->except('_token'));
+        session()->flash('message','Meal Updated Successfully');
+        return redirect()->route('meal.index');
     }
 
     /**
@@ -80,6 +104,8 @@ class MealController extends Controller
      */
     public function destroy(Meal $meal)
     {
-        //
+        $meal->delete();
+        session()->flash('message','Meal Deleted Successfully');
+        return redirect()->route('meal.index');
     }
 }

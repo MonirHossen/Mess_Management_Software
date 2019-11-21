@@ -3,7 +3,7 @@
         <label for="name" class=" form-control-label">Name</label>
     </div>
     <div class="col-12 col-md-9">
-        <input type="text" id="name" value="{{ old('name',isset($user->name) ? $user->name : null) }}" name="name" placeholder="Member Name" class="form-control">
+        <input type="text" id="name" value="{{ old('name',isset($user->name) ? $user->name : null) }}" name="name" placeholder="Admin Name" class="form-control">
         @error('name')
         <span class="text-danger">{{ $message }}</span>
         @enderror
@@ -43,18 +43,6 @@
         </div>
     </div>
 @endif
-
-<div class="row form-group">
-    <div class="col col-md-3">
-        <label for="phone" class=" form-control-label">Phone Number</label>
-    </div>
-    <div class="col-12 col-md-9">
-        <input type="text" id="phone" value="{{ old('phone',isset($user->phone) ? $user->phone : null) }}" name="phone" placeholder="Phone Number" class="form-control">
-        @error('phone')
-        <span class="text-danger">{{ $message }}</span>
-        @enderror
-    </div>
-</div>
 
 <div class="row form-group">
     <div class="col col-md-3">

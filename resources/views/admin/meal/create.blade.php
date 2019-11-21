@@ -2,13 +2,13 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <strong>Add New Admin User</strong>
-                <a href="{{ route('user.index') }}" class="btn btn-info pull-right">List Of Admins</a>
+            <strong>Add New Meals</strong>
+                <a href="{{ route('meal.index') }}" class="btn btn-info pull-right">List Of Meals</a>
         </div>
         <div class="card-body card-block">
-            <form action="{{ route('user.store') }}" method="post" enctype="multipart/form-data" class="form-horizontal">
+            <form action="{{ route('meal.store') }}" method="post" class="form-horizontal">
                 @csrf
-                @include('admin.user._form')
+                @include('admin.meal._form')
                 <div class="row form-group">
                     <div class="col col-md-3"></div>
                     <div class="col-12 col-md-9">

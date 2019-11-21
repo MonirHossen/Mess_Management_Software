@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\MessMember;
 use App\User;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class MessMemberController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +15,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data['users']  = User::orderBy('id','asc')->paginate(3);
-        return view('admin.user.index',$data);
+        $data['mess_members']  = MessMember::orderBy('id','asc')->paginate(3);
+        return view('admin.member.index',$data);
     }
 
     /**
@@ -25,7 +26,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('admin.user.create');
+       return view('admin.member.create');
     }
 
     /**
@@ -39,35 +40,34 @@ class UserController extends Controller
         $request->validate([
             'name'      => 'required',
             'email'     => 'required|email|unique:users',
-            'password'  => 'required|confirmed',
+            'phone'     => 'required',
             'image'     => 'mimes:jpeg,jpg,png|max:2048',
         ]);
 
-        $data   = $request->except(['_token','image','password']);
-        $data['password'] = bcrypt($request->password);
+        $data   = $request->except(['_token','image',]);
 
         if ($request->hasFile('image'))
         {
             $file   = $request->file('image');
-            $path   = 'users/images/';
+            $path   = 'members/images/';
             $file_name = time().rand('00000','99999').'.'.$file->getClientOriginalName();
             $file->move($path,$file_name);
             $data['image'] = $path.$file_name;
         }
 
-        User::create($data);
+        MessMember::create($data);
 
-        session()->flash('message','User Created Successfully');
-        return redirect()->route('user.index');
+        session()->flash('message','Member Created Successfully');
+        return redirect()->route('mess_member.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\MessMember  $messMember
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(MessMember $messMember)
     {
         //
     }
@@ -75,66 +75,67 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\MessMember  $messMember
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(MessMember $messMember)
     {
-        $data['user'] = User::findOrFail($id);
-        return view('admin.user.edit',$data);
+        $data['mess_member']    = $messMember;
+        return view('admin.member.edit',$data);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\MessMember  $messMember
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, MessMember $messMember)
     {
         $request->validate([
             'name'      => 'required',
+            'email'     => 'required|email',
+            'phone'     => 'required',
             'image'     => 'mimes:jpeg,jpg,png|max:2048',
         ]);
 
-        $data   = $request->except(['_token','image']);
-        $user   = User::findOrFail($id);
+        $data   = $request->except(['_token','image',]);
 
         if ($request->hasFile('image'))
         {
             $file   = $request->file('image');
-            $path   = 'users/images/';
+            $path   = 'members/images/';
             $file_name = time().rand('00000','99999').'.'.$file->getClientOriginalName();
             $file->move($path,$file_name);
             $data['image'] = $path.$file_name;
-            if ($user->image != null && file_exists($user->image) )
+            if ($messMember->image !=null && file_exists($messMember->image))
             {
-                unlink($user->image);
+                unlink($messMember->image);
             }
         }
 
-        $user->update($data);
+        $messMember->update($data);
 
-        session()->flash('message','User Updated Successfully');
-        return redirect()->route('user.index');
+        session()->flash('message','Member Updated Successfully');
+        return redirect()->route('mess_member.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\MessMember  $messMember
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(MessMember $messMember)
     {
-        $user   = User::findOrFail($id);
-        if ($user->image != null && file_exists($user->image) )
+        if ($messMember->image != null && file_exists($messMember->image))
         {
-            unlink($user->image);
+            unlink($messMember->image);
         }
-        $user->delete();
-        session()->flash('message','User Deleted Successfully');
-        return redirect()->route('user.index');
+        $messMember->delete();
+
+        session()->flash('message','Member Deleted Successfully');
+        return redirect()->route('mess_member.index');
     }
 }
